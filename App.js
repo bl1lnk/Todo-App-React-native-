@@ -1,52 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {useState} from 'react';
-
+import Header from './components/Header';
+import TodoItem from './components/TodoItem';
+import AddTodo from './components/AddTodo';
+import Sandbox from './components/Sandbox';
 
 export default function App() {
-  const [people, setPeople] = useState([
-    { name: 'shaun', id:'1'},
-    { name: 'yoshi', id:'2'},
-    { name: 'marion', id:'3'},
-    { name: 'john', id:'4'},
-    { name: 'xad', id:'5'},
-    { name: 'fan', id:'6'},
-    { name: 'ted', id:'7'}
-    
-  ])
-  
-  const pressHandler = (id) =>{
-      console.log(` the id  : ${id}`);
-      setPeople((prevPeople)=>{
-        return prevPeople.filter(person=> person.id != id)
-      })
-  }
+
+  const [todos , setTodos] = useState([
+    { text: 'buy coffe', key: '1'},
+    { text: 'create an apps', key: '2'},
+    { text: 'play on the switch', key: '3'}
+  ]);
   return (
-    
-    <View style={styles.container}>
+   // <Sandbox />
 
-      <FlatList 
-        numColumns={2}
-        keyExtractor={(item)=> item.id}
-        data= {people}
-        renderItem = {({item})=>(
-          <View>
-           <TouchableOpacity onPress={()=>pressHandler(item.id)}>
-             <Text style={styles.name} >{item.name}</Text>
-           </TouchableOpacity>      
-          </View>
-        )}
-      />
-      { /*people.map((item, key)=>
-        (
-          <View key={item.key}>
-            <Text >{item.name}</Text>
-            </View>
-        )
-      })*/}
-
+    <TouchableWithoutFeedback onPress={()=>{
+      Keyboard.dismiss();
+    }}> 
+       <View style={styles.container}>
+      
+       <Header  />
+       <View style={styles.content}>
+         <AddTodo setTodos={setTodos}  todos={todos} />
+           <View style={styles.list}>
+             <FlatList 
+               data= {todos}
+               renderItem={({item})=>(
+                <TodoItem  item={item} todos={todos}  setTodos={setTodos}/>
+               )}
+             />
+           </View>
+       </View>
+   
     </View>
   
+    </TouchableWithoutFeedback>
+   
   );
   
 }
@@ -55,20 +46,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  name:{
-    backgroundColor:"orange",
-    marginVertical: 3,
-    fontSize:25,
-    color: 'white',
-    padding: 5,
-    textAlign:'center',
-    marginHorizontal: 5,
-    marginTop: 24,
-    
- 
 
+  },
+  content:{
+    padding: 40,
+    backgroundColor:'#ddd',
+    flex:1
+  },
+  list:{
+    marginTop: 20,
+    //backgroundColor:"yellow",
+    flex:1
   }
 });
